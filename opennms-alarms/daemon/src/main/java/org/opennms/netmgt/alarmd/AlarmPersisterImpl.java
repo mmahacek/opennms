@@ -28,18 +28,9 @@
 
 package org.opennms.netmgt.alarmd;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.stream.Collectors;
-
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.Striped;
 import org.opennms.core.sysprops.SystemProperties;
 import org.opennms.netmgt.alarmd.api.AlarmPersisterExtension;
 import org.opennms.netmgt.dao.api.AlarmDao;
@@ -58,9 +49,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.support.TransactionOperations;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.Striped;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.stream.Collectors;
 
 /**
  * Singleton to persist OnmsAlarms.
@@ -119,7 +118,12 @@ public class AlarmPersisterImpl implements AlarmPersister {
         try {
             locks.forEach(Lock::lock);
             // Process the alarm inside a transaction
-            alarm = m_transactionOperations.execute((action) -> addOrReduceEventAsAlarm(event));
+            try {
+                alarm = m_transactionOperations.execute((action) -> addOrReduceEventAsAlarm(event));
+            } catch(Exception e) {
+                LOG.error("Exception while reducing event as alarm", e);
+                return null;
+            }
         } finally {
             locks.forEach(Lock::unlock);
         }
