@@ -67,11 +67,7 @@ def check_mapping(mapping):
     regex = re.compile(r"^" + path + r"$")
     for change in changed_files:
         if regex.match(change):
-            print("change=============>", change)
-            print("regex=============>", regex)
             return True
-        print("change-2=============>", change)
-        print("regex-2=============>", regex)
     return False
 
 
@@ -244,6 +240,8 @@ if "trigger-build" in mappings:
         for item in check_list:
             if (("docs" in item or "ui" in item) and len(check_list) == 1) or ("docs" in item and "ui" in item and len(check_list) == 2):
               del mappings["trigger-build"]
+              print("=>>>>>>>>>",len(check_list))
+              check_list.clear()
             else:        
               print("Executing workflow: build-deploy")
               print()
