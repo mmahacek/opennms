@@ -244,6 +244,7 @@ if "trigger-build" in mappings:
               check_list.clear()
             else:        
               print("Executing workflow: build-deploy")
+              print("=>>>>>>>>>",len(check_list))
               print()
               build_mappings["build-deploy"] = mappings["trigger-build"]
 
