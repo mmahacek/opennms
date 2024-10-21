@@ -70,8 +70,8 @@ def check_mapping(mapping):
             print("change=============>", change)
             print("regex=============>", regex)
             return True
-    print("change-2=============>", change)
-    print("regex-2=============>", regex)
+        print("change-2=============>", change)
+        print("regex-2=============>", regex)
     return False
 
 
@@ -131,9 +131,11 @@ if changed_files:
             print(" ", "*", item)
     print()
 
+check_list = []
 if What_to_build:
     print("What we want to build:")
     for item in What_to_build:
+        check_list.append(item)
         print(" ", "*", item)
     print()
 
@@ -239,9 +241,13 @@ if "trigger-build" in mappings:
         What_to_build.clear()
         build_mappings["master-branch"] = True
     elif not build_trigger_override_found and "merge-foundation/" not in branch_name:
-        print("Executing workflow: build-deploy")
-        print()
-        build_mappings["build-deploy"] = mappings["trigger-build"]
+        for item in check_list:
+            if "docs" in item and len(check_list)==1:
+              print("Executing workflow: build-docs")
+            else:        
+              print("Executing workflow: build-deploy")
+              print()
+              build_mappings["build-deploy"] = mappings["trigger-build"]
 
 if "trigger-docs" in mappings:
     build_mappings["docs"] = mappings["trigger-docs"]
