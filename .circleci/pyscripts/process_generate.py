@@ -242,7 +242,9 @@ if "trigger-build" in mappings:
         build_mappings["master-branch"] = True
     elif not build_trigger_override_found and "merge-foundation/" not in branch_name:
         for item in check_list:
-            if not ( (("docs" in item or "ui" in item) and len(check_list) == 1) or ("docs" in item and "ui" in item and len(check_list) == 2) ):      
+            if (("docs" in item or "ui" in item) and len(check_list) == 1) or ("docs" in item and "ui" in item and len(check_list) == 2):
+              mappings.remove("trigger-build")
+            else:        
               print("Executing workflow: build-deploy")
               print()
               build_mappings["build-deploy"] = mappings["trigger-build"]
