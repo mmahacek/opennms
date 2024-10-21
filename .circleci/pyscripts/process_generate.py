@@ -67,7 +67,11 @@ def check_mapping(mapping):
     regex = re.compile(r"^" + path + r"$")
     for change in changed_files:
         if regex.match(change):
+            print("change=============>", change)
+            print("regex=============>", regex)
             return True
+    print("change-2=============>", change)
+    print("regex-2=============>", regex)
     return False
 
 

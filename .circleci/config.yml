@@ -173,10 +173,10 @@ jobs:
             MAPPING: << parameters.mapping >>
             OUTPUT_PATH: /tmp/pipeline-parameters.json
           command: python3 .circleci/pyscripts/process_generate.py 
-      - run:
-          name: Generate Main YAML file
-          command: python3 .circleci/pyscripts/generate_main.py 
-      - verify-config
+      # - run:
+      #     name: Generate Main YAML file
+      #     command: python3 .circleci/pyscripts/generate_main.py 
+      # - verify-config
       - store_artifacts:
           path: /tmp/pipeline-parameters.json
           destination: pipeline-parameters.json
