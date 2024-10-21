@@ -129,7 +129,7 @@ if changed_files:
 
 
 check_build = []
-combine_build_element = None
+combine_build_element = ""
 
 if What_to_build:
     print("What we want to build:")
