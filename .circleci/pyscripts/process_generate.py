@@ -127,11 +127,16 @@ if changed_files:
             print(" ", "*", item)
     print()
 
-check_list = []
+
+check_build = []
+combine_build_element = None
+
 if What_to_build:
     print("What we want to build:")
     for item in What_to_build:
-        check_list.append(item)
+        check_build.append(item)
+        combine_build_element += item + ','
+        print("-----------------------", combine_build_element)
         print(" ", "*", item)
     print()
 
@@ -237,14 +242,15 @@ if "trigger-build" in mappings:
         What_to_build.clear()
         build_mappings["master-branch"] = True
     elif not build_trigger_override_found and "merge-foundation/" not in branch_name:
-        for item in check_list:
-            if (("docs" in item or "ui" in item) and len(check_list) == 1) or ({"ui", "docs"}.issubset(set(mappings)) and len(check_list) == 2):
+        for item in check_build:
+            if (("docs" in item or "ui" in item) and len(check_build) == 1) or ("docs" in combine_build_element  and "ui" in combine_build_element  and len(check_build) == 2):
               del mappings["trigger-build"]
-              print("=>>>>>>>>>",len(check_list))
-              check_list.clear()
+              print("=>>>>>>>>>",len(check_build))
+              check_build.clear()
+              del combine_build_element
             else:        
               print("Executing workflow: build-deploy")
-              print("=>>>>>>>>>",len(check_list))
+              print("=>>>>>>>>>",len(check_build))
               print()
               build_mappings["build-deploy"] = mappings["trigger-build"]
 
