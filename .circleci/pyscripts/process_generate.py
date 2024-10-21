@@ -216,9 +216,15 @@ if "trigger-build" in mappings:
         or "release-" in branch_name
         or "foundation-" in branch_name
     ) and "merge-foundation/" not in branch_name:
-        print("Executing workflow: build-publish")
-        build_mappings["build-publish"] = mappings["trigger-build"]
-        print()
+         for item in check_build:
+            if (("docs" in item or "ui" in item) and len(check_build) == 1) or ("docs" in combine_build_element  and "ui" in combine_build_element  and len(check_build) == 2):
+              del mappings["trigger-build"]
+              check_build.clear()
+              del combine_build_element
+            else:
+              print("Executing workflow: build-publish")
+              build_mappings["build-publish"] = mappings["trigger-build"]
+              print()
     elif "merge-foundation/" in branch_name and not build_trigger_override_found:
         print("Execute workflow: merge-foundation")
         print()
