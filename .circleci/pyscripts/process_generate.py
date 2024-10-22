@@ -365,4 +365,4 @@ with open(output_path, "w", encoding="UTF-8") as file_handler:
 
 with open(path_to_build_components, "w", encoding="UTF-8") as file_handler:
     file_handler.write(json.dumps(build_mappings, indent=4))
-         
+          
