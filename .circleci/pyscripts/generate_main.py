@@ -314,3 +314,4 @@ for folder in component_folders:
     shutil.rmtree(os.path.join("/tmp", ".circleci", "main", folder))
 
 working_directory.cleanup()
+ 
