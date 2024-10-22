@@ -255,7 +255,7 @@ if "trigger-build" in mappings:
         build_mappings["master-branch"] = True
     elif not build_trigger_override_found and "merge-foundation/" not in branch_name:
         for item in check_build:
-            if ((item == "docs" or item == "ui" or item == "circleci_configuration") and len(check_build) == 1) or (("docs" in combine_build_element  and "ui_" in combine_build_element and len(check_build) == 2) or \
+            if ((item == "docs" or item == "ui" or item == "circleci_configuration") and len(check_build) == 1) or (("docs" in combine_build_element  and "ui" in combine_build_element and len(check_build) == 2) or \
                 ("docs" in combine_build_element  and "circleci_configuration" in combine_build_element and len(check_build) == 2) or ("circleci_configuration" in combine_build_element  and "ui_" in combine_build_element and len(check_build) == 2 ))  or \
                 ("docs" in combine_build_element  and "ui_" in combine_build_element and "circleci_configuration" in combine_build_element  and len(check_build) == 3):
               del mappings["trigger-build"]
