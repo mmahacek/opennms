@@ -9,7 +9,7 @@
   <artifactId>opennms-dao</artifactId>
   <name>OpenNMS :: Model :: DAO :: Impl</name>
   <packaging>bundle</packaging>
-  <build>
+  <build> 
     <plugins>  
       <plugin> 
         <groupId>org.apache.maven.plugins</groupId>
