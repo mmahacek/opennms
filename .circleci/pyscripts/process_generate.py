@@ -135,7 +135,10 @@ if What_to_build:
     print("What we want to build:")
     for item in What_to_build:
         check_build.append(item)
-        combine_build_element += item + ','
+        if item == "ui":
+         combine_build_element += item + '_,'
+        else:
+         combine_build_element += item + ','
         print(" ", "*", item)
     print()
 
@@ -252,15 +255,12 @@ if "trigger-build" in mappings:
         build_mappings["master-branch"] = True
     elif not build_trigger_override_found and "merge-foundation/" not in branch_name:
         for item in check_build:
-            if (("docs" in item or "ui" in item or "circleci_configuration" in item) and len(check_build) == 1) or (("docs" in combine_build_element  and "ui" in combine_build_element and len(check_build) == 2) or \
-                ("docs" in combine_build_element  and "circleci_configuration" in combine_build_element and len(check_build) == 2) or ("circleci_configuration" in combine_build_element  and "ui" in combine_build_element and len(check_build) == 2 ))  or \
-                ("docs" in combine_build_element  and "ui" in combine_build_element and "circleci_configuration" in combine_build_element  and len(check_build) == 3):
+            if ((item == "docs" or item == "ui" or item == "circleci_configuration") and len(check_build) == 1) or (("docs" in combine_build_element  and "ui_" in combine_build_element and len(check_build) == 2) or \
+                ("docs" in combine_build_element  and "circleci_configuration" in combine_build_element and len(check_build) == 2) or ("circleci_configuration" in combine_build_element  and "ui_" in combine_build_element and len(check_build) == 2 ))  or \
+                ("docs" in combine_build_element  and "ui_" in combine_build_element and "circleci_configuration" in combine_build_element  and len(check_build) == 3):
               del mappings["trigger-build"]
               check_build.clear()
               del combine_build_element
-              print("Detected GIT keywords:")
-              for item in git_keywords:
-                  print(" ", "*", item)
               break
             else:        
               print("Executing workflow: build-deploy")
@@ -365,4 +365,3 @@ with open(output_path, "w", encoding="UTF-8") as file_handler:
 
 with open(path_to_build_components, "w", encoding="UTF-8") as file_handler:
     file_handler.write(json.dumps(build_mappings, indent=4))
-          
