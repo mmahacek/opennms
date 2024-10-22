@@ -257,7 +257,7 @@ if "trigger-build" in mappings:
                 ("docs" in combine_build_element  and "ui" in combine_build_element and "circleci_configuration" in combine_build_element  and len(check_build) == 3):
               del mappings["trigger-build"]
               check_build.clear()
-              del combine_build_element
+            #   del combine_build_element
               print("=========================>>>>>>>>",combine_build_element,len(check_build))
               break
             else:        
