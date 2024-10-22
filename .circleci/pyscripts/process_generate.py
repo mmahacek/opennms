@@ -217,8 +217,8 @@ if "trigger-build" in mappings:
         or "foundation-" in branch_name
     ) and "merge-foundation/" not in branch_name:
          for item in check_build:
-            if (("docs" in item or "ui" in item or "circleci_configuration" in item) and len(check_build) == 1) or (("docs" in combine_build_element  and "ui" in combine_build_element ) or \
-                ("docs" in combine_build_element  and "circleci_configuration" in combine_build_element ) or ("circleci_configuration" in combine_build_element  and "ui" in combine_build_element ) and len(check_build) == 2) or \
+            if (("docs" in item or "ui" in item or "circleci_configuration" in item) and len(check_build) == 1) or (("docs" in combine_build_element  and "ui" in combine_build_element and len(check_build) == 2) or \
+                ("docs" in combine_build_element  and "circleci_configuration" in combine_build_element and len(check_build) == 2) or ("circleci_configuration" in combine_build_element  and "ui" in combine_build_element and len(check_build) == 2 ))  or \
                 ("docs" in combine_build_element  and "ui" in combine_build_element and "circleci_configuration" in combine_build_element  and len(check_build) == 3):
               del mappings["trigger-build"]
               check_build.clear()
