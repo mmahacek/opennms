@@ -258,6 +258,7 @@ if "trigger-build" in mappings:
               del mappings["trigger-build"]
               check_build.clear()
               del combine_build_element
+              print("=========================>>>>>>>>")
               break
             else:        
               print("Executing workflow: build-deploy")
