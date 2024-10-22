@@ -258,6 +258,9 @@ if "trigger-build" in mappings:
               del mappings["trigger-build"]
               check_build.clear()
               del combine_build_element
+              print("Detected GIT keywords:")
+              for item in git_keywords:
+                  print(" ", "*", item)
               break
             else:        
               print("Executing workflow: build-deploy")
