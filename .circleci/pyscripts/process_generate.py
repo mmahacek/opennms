@@ -139,7 +139,7 @@ if What_to_build:
         #  # attaching "_" with ui as build item also contains "ui" keyword
         #  combine_build_element += item + '_,'
         # else:
-        #  combine_build_element += item + ','
+        combine_build_element += item + ','
         print(" ", "*", item)
     print()
 
