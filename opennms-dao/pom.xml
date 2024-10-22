@@ -10,7 +10,7 @@
   <name>OpenNMS :: Model :: DAO :: Impl</name>
   <packaging>bundle</packaging>
   <build> 
-    <plugins>   
+    <plugins>    
       <plugin>  
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
