@@ -68,7 +68,7 @@ commands:
           destination: filtered_vulnerabilities.csv
       - run:
           name: Install jq
-          command: apt-get update && apt-get install -y jq
+          command: sudo apt-get update && sudo apt-get install -y jq
       - run:
           name: Create JIRA Issues for Trivy Findings
           command: |
