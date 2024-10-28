@@ -48,10 +48,7 @@ commands:
             export ARCH="$(printf "<< parameters.architecture >>" | tr / -)"
             export TAG="<< parameters.container_name >>-${ARCH}"
             # Table result includes only package filenames. Use '--format json' option to get the full path to the package file.
-            #/tmp/bin/trivy image --ignorefile ~/project/.circleci/trivy-config/trivyignore --timeout 30m --exit-code 0 --format json -o /tmp/report.json --no-progress opennms/${TAG}
-            #/tmp/bin/trivy image --ignorefile ~/project/.circleci/trivy-config/trivyignore --timeout 30m --exit-code 0 --severity HIGH,CRITICAL --vuln-type os,library --format json -o /tmp/horizon33-report.json --no-progress opennms/${TAG}
             /tmp/bin/trivy image --severity HIGH,CRITICAL --vuln-type os,library --scanners vuln --ignorefile ~/project/.circleci/trivy-config/trivyignore --timeout 50m --format json -o /tmp/report.json --no-progress opennms/${TAG}
-            #/tmp/bin/trivy image --ignorefile ~/project/.circleci/trivy-config/trivyignore --timeout 30m --exit-code 0 -o /tmp/report.txt --no-progress opennms/${TAG}
       - store_artifacts:
           path: /tmp/report.json
           destination: report.json
@@ -69,3 +66,59 @@ commands:
       - store_artifacts:
           path: filtered_vulnerabilities.csv
           destination: filtered_vulnerabilities.csv
+      - run:
+          name: Install jq
+          command: apt-get update && apt-get install -y jq
+      - run:
+          name: Create JIRA Issues for Trivy Findings
+          command: |
+            JIRA_URL="$JIRA_URL"
+            JIRA_USER="$JIRA_USER"
+            JIRA_API_TOKEN="$JIRA_API_TOKEN"
+            PROJECT_KEY="NMS"
+            EPIC_KEY="NMS-16601"
+
+            # Read vulnerabilities from report.json
+            findings=$(jq -c '.Results[]' /tmp/report.json)
+
+            for finding in $findings; do
+                VULNERABILITY_ID=$(echo $finding | jq -r .VulnerabilityID)
+                DESCRIPTION=$(echo $finding | jq -r .Description)
+                SEVERITY=$(echo $finding | jq -r .Severity)
+
+                # Check for existing issue
+                existing_issue=$(curl -s -u "$JIRA_USER:$JIRA_API_TOKEN" -X GET "$JIRA_URL?jql=summary~'$VULNERABILITY_ID' AND project='$PROJECT_KEY'")
+                
+                # Only create the issue if it doesn't exist
+                if [[ $(echo "$existing_issue" | jq '.total') -eq 0 ]]; then
+                    # Create JSON payload with epic link
+                    ISSUE_PAYLOAD=$(printf '{
+                        "fields": {
+                            "project": {
+                                "key": "%s"
+                            },
+                            "summary": "Vulnerability: %s",
+                            "description": "%s",
+                            "issuetype": {
+                                "name": "Bug"
+                            },
+                            "priority": {
+                                "name": "%s"
+                            },
+                            "customfield_10008": "%s"  # Replace with your epic link field ID
+                        }
+                    }' "$PROJECT_KEY" "$VULNERABILITY_ID" "$DESCRIPTION" "$SEVERITY" "$EPIC_KEY")
+
+                    # Create the JIRA issue
+                    response=$(curl -s -u "$JIRA_USER:$JIRA_API_TOKEN" -X POST --data "$ISSUE_PAYLOAD" -H "Content-Type: application/json" "$JIRA_URL")
+                    
+                    # Check for successful creation
+                    if [[ $(echo "$response" | jq '.key') ]]; then
+                        echo "Created issue: $(echo "$response" | jq '.key')"
+                    else
+                        echo "Failed to create issue: $response"
+                    fi
+                else
+                    echo "Issue for vulnerability $VULNERABILITY_ID already exists."
+                fi
+            done
